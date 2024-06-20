@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -ouex pipefail
 
 RELEASE="$(rpm -E %fedora)"
@@ -25,3 +24,5 @@ systemctl enable podman.socket
 #### Testing this branch with fastfetch
 
 rpm-ostree install fastfetch
+
+source ./brew.sh
