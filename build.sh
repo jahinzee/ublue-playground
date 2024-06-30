@@ -29,5 +29,13 @@ tar --zstd -cvf /usr/share/homebrew.tar.zst /home/linuxbrew/.linuxbrew
 echo ":: BRANDING"
 # ---
 
-sed -i '/^PRETTY_NAME/s/Kinoite/jahinzee-ublue-playground/' /usr/lib/os-release
+sed -i '/^PRETTY_NAME/s/Kinoite/bp_OS/' /usr/lib/os-release
+sed -i "/^PRETTY_NAME/s/Fedora Linux/bp_OS/" /usr/lib/os-release
+sed -i '/^NAME/s/Fedora Linux/bp_OS/' /usr/lib/os-release
+sed -i '/^DEFAULT_HOSTNAME/s/fedora/bpos/' /usr/lib/os-release
+sed -i '/^HOME_URL/s/https:\/\/kinoite.fedoraproject.org/https:\/\/github.com\/jahinzee\/ublue-playground/' /usr/lib/os-release
+sed -i '/^DOCUMENTATION_URL/s/https:\/\/kinoite.fedoraproject.org/https:\/\/github.com\/jahinzee\/ublue-playground/' /usr/lib/os-release
+sed -i '/^SUPPORT_URL/s/https:\/\/kinoite.fedoraproject.org/https:\/\/github.com\/jahinzee\/ublue-playground/' /usr/lib/os-release
+sed -i '/^BUG_REPORT_URL/s/https:\/\/kinoite.fedoraproject.org/https:\/\/github.com\/jahinzee\/ublue-playground/' /usr/lib/os-release
+
 cp /tmp/watermark.png /usr/share/plymouth/themes/spinner/watermark.png
