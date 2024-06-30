@@ -6,11 +6,15 @@ RELEASE="$(rpm -E %fedora)"
 # Most of these commands are based on the build
 # scripts in https://github.com/ublue-os/bluefin.
 
-#### PACKAGES
+# ---
+echo ":: PACKAGES"
+# ---
 
 rpm-ostree install podman distrobox
 
-#### LINUXBREW
+# ---
+echo ":: LINUXBREW"
+# ---
 
 touch /.dockerenv
 mkdir -p /var/home
@@ -21,7 +25,9 @@ chmod +x /tmp/brew-install
 /tmp/brew-install
 tar --zstd -cvf /usr/share/homebrew.tar.zst /home/linuxbrew/.linuxbrew
 
-#### BRANDING
+# ---
+echo ":: BRANDING"
+# ---
 
 sed -i '/^PRETTY_NAME/s/Kinoite/jahinzee-ublue-playground/' /usr/lib/os-release
-cp watermark.png /usr/share/plymouth/themes/spinner/watermark.png
+cp /tmp/watermark.png /usr/share/plymouth/themes/spinner/watermark.png
