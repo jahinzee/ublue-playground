@@ -108,4 +108,5 @@ rpm-ostree install \
 # ---
 set +x
 echo ":: Build complete."
+set -x
 # ---
