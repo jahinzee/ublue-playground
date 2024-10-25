@@ -1,5 +1,7 @@
 # jahinzee's Highly-Volatile uBlue Playground!
 
+> **Codenamed: *bp*_OS** – stands for *bogan princess*[^1], not British Petroleum.
+
 ## NOT FOR GENERAL CONSUMPTION
 
 This repo is a testing ground for experimenting with building my own uBlue image. I would absolutely not recommend using this on any system in any way, *especially* in production or any daily-driver capacity.
@@ -25,3 +27,6 @@ rpm-ostree rebase ostree-image-signed:docker://ghcr.io/jahinzee/ublue-playground
 
 3. Reboot, and now your Fedora installation is fully at the mercy of this repo.
    - To revert to your previous base image, run the same command, but change the container URL to whatever you had previously. (you can find your last image with `rpm-ostree status`)
+
+
+[^1]: It's an in-joke :)

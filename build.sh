@@ -1,39 +1,38 @@
 #!/bin/bash
-set -ouex pipefail
+set -oue pipefail
 trap 'echo -e :: Exiting build script.\\n:: If you see this message without a \"Build completed.\" message, an error may have occured.' EXIT
 
+# shellcheck disable=SC2034
 RELEASE="$(rpm -E %fedora)"
 
 # Some commands are based on the build
 # scripts in https://github.com/ublue-os/bluefin.
-
-echo '    _              ___  ____     '
-echo '   | |__  _ __    / _ \/ ___|    '
-echo '   | '_ \| '_ \  | | | \___ \    '
-echo '   | |_) | |_) | | |_| |___) |   '
-echo '   |_.__/| .__/___\___/|____/    '
-echo '         |_| |_____|             '
-echo '                                 '
-echo " ~ jahinzee's uBlue Playground ~ "
+echo '            ,,                                          '
+echo '            db                    mm                    '
+echo '                                  MM                    '
+# shellcheck disable=SC2016
+echo '`7MMpdMAo.`7MM  ,p6"bo   ,pW"Wq.mmMMmm .gP"Ya   .gP"Ya  '
+echo "  MM   \`Wb  MM 6M'  OO  6W'   \`Wb MM  ,M'   Yb ,M'   Yb "
+echo '  MM    M8  MM 8M       8M     M8 MM  8M"""""" 8M"""""" '
+echo '  MM   ,AP  MM YM.    , YA.   ,A9 MM  YM.    , YM.    , '
+echo "  MMbmmd' .JMML.YMbmd'   \`Ybmd9'  \`Mbmo\`Mbmmd'  \`Mbmmd' "
+echo '  MM                                                    '
+echo '.JMML.                                                  '
 echo ""
 
 # ---
-echo ":: Adding branding"
+set +x
+echo ":: Branding"
+set -x
 # ---
 
-sed -i "/^PRETTY_NAME/s/Kinoite/Testing build – not for general consumption!/" /usr/lib/os-release
-sed -i "/^PRETTY_NAME/s/Fedora Linux/bp_OS/" /usr/lib/os-release
-sed -i '/^NAME/s/Fedora Linux/bp_OS/' /usr/lib/os-release
-sed -i '/^DEFAULT_HOSTNAME/s/fedora/bpos/' /usr/lib/os-release
-sed -i '/^HOME_URL/s/https:\/\/kinoite.fedoraproject.org/https:\/\/github.com\/jahinzee\/ublue-playground/' /usr/lib/os-release
-sed -i '/^DOCUMENTATION_URL/s/https:\/\/kinoite.fedoraproject.org/https:\/\/github.com\/jahinzee\/ublue-playground/' /usr/lib/os-release
-sed -i '/^SUPPORT_URL/s/https:\/\/kinoite.fedoraproject.org/https:\/\/github.com\/jahinzee\/ublue-playground/' /usr/lib/os-release
-sed -i '/^BUG_REPORT_URL/s/https:\/\/kinoite.fedoraproject.org/https:\/\/github.com\/jahinzee\/ublue-playground/' /usr/lib/os-release
-
-cp /tmp/watermark.png /usr/share/plymouth/themes/spinner/watermark.png
+rpm-ostree override remove fedora-logos --install generic-logos
+sed -i '/^PRETTY_NAME/s/Kinoite/Picotee/' /usr/lib/os-release
 
 # ---
-echo ":: Installing packages: Distrobox"
+set +x
+echo ":: Packages: Distrobox"
+set -x
 # ---
 
 rpm-ostree install \
@@ -41,15 +40,9 @@ rpm-ostree install \
     distrobox
 
 # ---
-echo ":: Installing packages: Drivers/Broadcom"
-# ---
-
-# TODO: add a Broadcom target build
-rpm-ostree install \
-    broadcom-wl
-
-# ---
-echo ":: Installing packages: Virtualisation"
+set +x
+echo ":: Packages: Virtualisation"
+set -x
 # ---
 
 rpm-ostree install \
@@ -62,18 +55,57 @@ rpm-ostree install \
 systemctl enable libvirtd
 
 # ---
-echo ":: Installing Linuxbrew"
+set +x
+echo ":: Packages: pipx"
+set -x
 # ---
 
-touch /.dockerenv
-mkdir -p /var/home
-mkdir -p /var/roothome
-
-curl -Lo /tmp/brew-install https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-chmod +x /tmp/brew-install
-/tmp/brew-install || true
-tar --zstd -cvf /usr/share/homebrew.tar.zst /home/linuxbrew/.linuxbrew
+rpm-ostree install pipx
 
 # ---
+set +x
+echo ":: Packages: Codium"
+set -x
+# ---
+
+CODIUM_REPO_KEY=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg
+CODIUM_REPO_SPEC="[gitlab.com_paulcarroty_vscodium_repo]\nname=download.vscodium.com\nbaseurl=https://download.vscodium.com/rpms/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg\nmetadata_expire=1h"
+CODIUM_REPO_SPEC_FILE="/etc/yum.repos.d/vscodium.repo"
+
+rpmkeys --import "$CODIUM_REPO_KEY"
+echo -e "$CODIUM_REPO_SPEC" | tee -a "$CODIUM_REPO_SPEC_FILE"
+rpm-ostree install codium
+
+# ---
+set +x
+echo ":: Packages: System Utilities"
+set -x
+# ---
+
+rpm-ostree install \
+    bat \
+    eza \
+    fastfetch \
+    trash-cli \
+    fzf \
+    wl-clipboard \
+    zoxide \
+    git
+
+# # ---
+# echo ":: Addons: Linuxbrew"
+# # ---
+
+# touch /.dockerenv
+# mkdir -p /var/home
+# mkdir -p /var/roothome
+
+# curl -Lo /tmp/brew-install https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+# chmod +x /tmp/brew-install
+# /tmp/brew-install || true
+# tar --zstd -cvf /usr/share/homebrew.tar.zst /home/linuxbrew/.linuxbrew
+
+# ---
+set +x
 echo ":: Build complete."
 # ---
