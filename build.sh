@@ -7,18 +7,6 @@ RELEASE="$(rpm -E %fedora)"
 
 # Some commands are based on the build
 # scripts in https://github.com/ublue-os/bluefin.
-echo '            ,,                                          '
-echo '            db                    mm                    '
-echo '                                  MM                    '
-# shellcheck disable=SC2016
-echo '`7MMpdMAo.`7MM  ,p6"bo   ,pW"Wq.mmMMmm .gP"Ya   .gP"Ya  '
-echo "  MM   \`Wb  MM 6M'  OO  6W'   \`Wb MM  ,M'   Yb ,M'   Yb "
-echo '  MM    M8  MM 8M       8M     M8 MM  8M"""""" 8M"""""" '
-echo '  MM   ,AP  MM YM.    , YA.   ,A9 MM  YM.    , YM.    , '
-echo "  MMbmmd' .JMML.YMbmd'   \`Ybmd9'  \`Mbmo\`Mbmmd'  \`Mbmmd' "
-echo '  MM                                                    '
-echo '.JMML.                                                  '
-echo ""
 
 # ---
 set +x
@@ -91,6 +79,38 @@ rpm-ostree install \
     wl-clipboard \
     zoxide \
     git
+
+# ---
+set +x
+echo ":: Packages: fish (+ set as default shell for new users)"
+set -x
+# ---
+
+rpm-ostree install fish
+sed -i 's/SHELL=.*/SHELL=\/usr\/bin\/fish/g' /etc/default/useradd
+
+# ---
+set +x
+echo ":: Packages: KDE Utilities"
+set -x
+# ---
+
+rpm-ostree install \
+    yakuake
+
+# ---
+set +x
+echo ":: Packages: Klassy"
+set -x
+# ---
+
+KLASSY_REPO_SPEC_URL="https://download.opensuse.org/repositories/home:/paul4us/Fedora_$RELEASE/home:paul4us.repo"
+KLASSY_REPO_SPEC_FILE="/etc/yum.repos.d/klassy.repo"
+KLASSY_REPO_KEY_URL="https://build.opensuse.org/projects/home:paul4us/signing_keys/download?kind=gpg"
+
+rpmkeys --import "$KLASSY_REPO_KEY_URL"
+curl "$KLASSY_REPO_SPEC_URL" | tee -a "$KLASSY_REPO_SPEC_FILE"
+rpm-ostree install klassy
 
 # # ---
 # echo ":: Addons: Linuxbrew"
