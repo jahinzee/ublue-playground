@@ -56,7 +56,7 @@ echo ":: Packages: Codium"
 set -x
 # ---
 
-CODIUM_REPO_KEY=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg
+CODIUM_REPO_KEY="https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg"
 CODIUM_REPO_SPEC="[gitlab.com_paulcarroty_vscodium_repo]\nname=download.vscodium.com\nbaseurl=https://download.vscodium.com/rpms/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg\nmetadata_expire=1h"
 CODIUM_REPO_SPEC_FILE="/etc/yum.repos.d/vscodium.repo"
 
@@ -104,7 +104,17 @@ echo ":: Packages: Klassy"
 set -x
 # ---
 
-KLASSY_REPO_SPEC_URL="https://download.opensuse.org/repositories/home:/paul4us/Fedora_$RELEASE/home:paul4us.repo"
+# This variable will be set in case Klassy has not been updated to the actual
+# latest version.
+KLASSY_REPO_VERSION_OVERRIDE=40
+
+if [[ -n "$KLASSY_REPO_VERSION_OVERRIDE" ]]; then
+    KLASSY_VERSION="$KLASSY_REPO_VERSION_OVERRIDE"
+else
+    KLASSY_VERSION="$RELEASE"
+fi
+
+KLASSY_REPO_SPEC_URL="https://download.opensuse.org/repositories/home:/paul4us/Fedora_$KLASSY_VERSION/home:paul4us.repo"
 KLASSY_REPO_SPEC_FILE="/etc/yum.repos.d/klassy.repo"
 KLASSY_REPO_KEY_URL="https://build.opensuse.org/projects/home:paul4us/signing_keys/download?kind=gpg"
 
