@@ -5,9 +5,6 @@ trap 'echo -e :: Exiting build script.\\n:: If you see this message without a \"
 # shellcheck disable=SC2034
 RELEASE="$(rpm -E %fedora)"
 
-# Some commands are based on the build
-# scripts in https://github.com/ublue-os/bluefin.
-
 # ---
 set +x
 echo ":: Branding"
@@ -80,14 +77,14 @@ rpm-ostree install \
     zoxide \
     git
 
-# ---
-set +x
-echo ":: Packages: fish (+ set as default shell for new users)"
-set -x
-# ---
+# # ---
+# set +x
+# echo ":: Packages: fish (+ set as default shell for new users)"
+# set -x
+# # ---
 
-rpm-ostree install fish
-sed -i 's/SHELL=.*/SHELL=\/usr\/bin\/fish/g' /etc/default/useradd
+# rpm-ostree install fish
+# sed -i 's/SHELL=.*/SHELL=\/usr\/bin\/fish/g' /etc/default/useradd
 
 # ---
 set +x
@@ -104,15 +101,7 @@ echo ":: Packages: Klassy"
 set -x
 # ---
 
-# This variable will be set in case Klassy has not been updated to the actual
-# latest version.
-# KLASSY_REPO_VERSION_OVERRIDE=40
-
-if [[ -n "$KLASSY_REPO_VERSION_OVERRIDE" ]]; then
-    KLASSY_VERSION="$KLASSY_REPO_VERSION_OVERRIDE"
-else
-    KLASSY_VERSION="$RELEASE"
-fi
+KLASSY_VERSION=41
 
 KLASSY_REPO_SPEC_URL="https://download.opensuse.org/repositories/home:/paul4us/Fedora_$KLASSY_VERSION/home:paul4us.repo"
 KLASSY_REPO_SPEC_FILE="/etc/yum.repos.d/klassy.repo"
@@ -122,18 +111,20 @@ rpmkeys --import "$KLASSY_REPO_KEY_URL"
 curl "$KLASSY_REPO_SPEC_URL" | tee -a "$KLASSY_REPO_SPEC_FILE"
 rpm-ostree install klassy
 
-# # ---
-# echo ":: Addons: Linuxbrew"
-# # ---
+# ---
+echo ":: Addons: Linuxbrew"
+# ---
 
-# touch /.dockerenv
-# mkdir -p /var/home
-# mkdir -p /var/roothome
+# Some commands are based on the build scripts in https://github.com/ublue-os/bluefin.
 
-# curl -Lo /tmp/brew-install https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-# chmod +x /tmp/brew-install
-# /tmp/brew-install || true
-# tar --zstd -cvf /usr/share/homebrew.tar.zst /home/linuxbrew/.linuxbrew
+touch /.dockerenv
+mkdir -p /var/home
+mkdir -p /var/roothome
+
+curl -Lo /tmp/brew-install https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+chmod +x /tmp/brew-install
+/tmp/brew-install || true
+tar --zstd -cvf /usr/share/homebrew.tar.zst /home/linuxbrew/.linuxbrew
 
 # ---
 set +x
