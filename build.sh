@@ -106,7 +106,7 @@ set -x
 
 # This variable will be set in case Klassy has not been updated to the actual
 # latest version.
-KLASSY_REPO_VERSION_OVERRIDE=40
+# KLASSY_REPO_VERSION_OVERRIDE=40
 
 if [[ -n "$KLASSY_REPO_VERSION_OVERRIDE" ]]; then
     KLASSY_VERSION="$KLASSY_REPO_VERSION_OVERRIDE"
